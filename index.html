@@ -8,77 +8,142 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9', // Azul cielo (Sky Blue)
+                        surface: {
+                            light: 'rgba(226, 232, 240, 0.7)',
+                            dark: 'rgba(15, 23, 42, 0.7)'
+                        }
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
         }
     </script>
     <style>
         .loader {
-            border: 2px solid #e5e7eb;
-            border-top: 2px solid #007aff;
+            border: 2px solid transparent;
+            border-top: 2px solid #0ea5e9;
+            border-right: 2px solid #0ea5e9;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
         @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
         }
         .animate-fade-out {
             animation: fadeOut 0.2s ease-out forwards;
         }
         
-        /* Scrollbar personalizada y elegante */
+        .file-item-wrapper {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .file-item-wrapper.is-loaded {
+            opacity: 1;
+        }
+        
+        /* Scrollbar oculta pero funcional */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #d1d5db;
+            background: rgba(14, 165, 233, 0.2);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
+            background: rgba(14, 165, 233, 0.5);
         }
-        .dark::-webkit-scrollbar-thumb {
-            background: #4b5563;
+        
+        /* Efecto de cristal general */
+        .glass-panel {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
-        .dark::-webkit-scrollbar-thumb:hover {
-            background: #6b7280;
+        
+        /* Slider personalizado */
+        .custom-zoom-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+        .dark .custom-zoom-slider {
+            background: #334155;
+        }
+        .custom-zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(14, 165, 233, 0.3);
+            transition: transform 0.15s ease;
+        }
+        .custom-zoom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #0284c7;
         }
     </style>
 </head>
-<body class="bg-[#fbfbfd] dark:bg-[#0f1115] font-sans antialiased text-gray-900 dark:text-gray-100 flex flex-col md:flex-row h-screen overflow-hidden transition-colors duration-300">
+<body class="bg-slate-200 dark:bg-slate-950 font-sans antialiased text-slate-800 dark:text-slate-200 flex flex-col md:flex-row h-screen overflow-hidden transition-colors duration-500 relative">
+
+    <!-- Fondos dinámicos decorativos -->
+    <div class="absolute top-0 -left-4 w-72 h-72 bg-sky-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob dark:bg-sky-900 dark:opacity-20 pointer-events-none z-0 transition-colors duration-700"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 dark:bg-blue-900 dark:opacity-20 pointer-events-none z-0 transition-colors duration-700"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-slate-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 dark:bg-slate-800 dark:opacity-20 pointer-events-none z-0 transition-colors duration-700"></div>
 
     <!-- Barra Lateral (Sidebar) -->
-    <aside class="w-full md:w-72 bg-[#f5f5f7] dark:bg-[#16181d] border-b md:border-b-0 md:border-r border-gray-200/50 dark:border-gray-800/80 flex flex-col flex-shrink-0 md:h-full z-10 transition-colors duration-300">
+    <aside class="w-full md:w-72 glass-panel bg-surface-light dark:bg-surface-dark border-b md:border-b-0 md:border-r border-white/40 dark:border-slate-800/60 flex flex-col flex-shrink-0 md:h-full z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] dark:shadow-none transition-colors duration-500">
         <div class="px-6 py-8 flex flex-col gap-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Mi Sitio</h1>
-                <button onclick="toggleDarkMode()" class="p-2 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors" title="Cambiar tema">
+                <h1 class="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-blue-600 dark:from-sky-400 dark:to-blue-400 transition-all duration-500">DriveUX</h1>
+                <button onclick="toggleDarkMode()" class="p-2 text-slate-500 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl transition-colors duration-500" title="Cambiar tema">
                     <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
             </div>
             <!-- Search Box -->
             <div class="relative w-full">
-                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="search-box" placeholder="Buscar archivos..." class="w-full pl-10 pr-4 py-2.5 bg-white/60 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 text-gray-900 dark:text-white text-sm rounded-2xl focus:bg-white dark:focus:bg-gray-800 focus:ring-4 focus:ring-[#007aff]/10 focus:border-[#007aff] shadow-[0_2px_10px_rgba(0,0,0,0.02)] outline-none transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="search-box" placeholder="Buscar en el espacio..." class="w-full pl-11 pr-4 py-3 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700/50 text-slate-900 dark:text-white text-sm rounded-2xl focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary/50 focus:border-transparent outline-none transition-all duration-300 placeholder-slate-400 backdrop-blur-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
             </div>
         </div>
-        <div class="px-6 pb-3 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hidden md:block">
+        <div class="px-6 pb-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] hidden md:block">
             Categorías
         </div>
         <nav id="sidebar-nav" class="flex md:flex-col overflow-x-auto md:overflow-y-auto px-4 md:px-3 pb-3 md:pb-6 space-x-2 md:space-x-0 md:space-y-1 scrollbar-hide">
@@ -87,61 +152,97 @@
     </aside>
 
     <!-- Contenido Principal -->
-    <main class="flex-1 h-full overflow-y-scroll overflow-x-hidden">
-        <div class="w-full max-w-6xl mx-auto px-6 py-8 md:py-12">
+    <main class="flex-1 h-full overflow-y-scroll overflow-x-hidden relative z-10">
+        <div class="w-full mx-auto px-4 py-4 md:px-6 md:py-6">
 
-        <div class="flex flex-col md:flex-row justify-end items-center mb-10 gap-4 md:gap-8">
-            <div class="flex items-center gap-6">
+        <div class="flex justify-end mb-6">
+            <div class="flex flex-wrap items-center gap-4 bg-white/40 dark:bg-slate-900/40 glass-panel p-2 rounded-3xl border border-white/50 dark:border-slate-800/50 shadow-sm ml-auto">
                 <!-- Controles de Vista -->
-                <div class="flex items-center">
-                    <div id="view-controls" class="inline-flex bg-gray-100/80 dark:bg-gray-800/80 p-1.5 rounded-2xl" role="group">
-                        <button type="button" data-view="list" class="px-5 py-1.5 text-sm font-semibold rounded-xl text-gray-900 dark:text-white bg-white dark:bg-gray-700 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all">
-                            Lista
-                        </button>
-                        <button type="button" data-view="grid" class="px-5 py-1.5 text-sm font-medium rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all">
-                            Grilla
-                        </button>
-                    </div>
+                <div id="view-controls" class="flex items-center bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-2xl" role="group">
+                    <button type="button" data-view="list" class="px-4 py-2 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    </button>
+                    <button type="button" data-view="grid" class="px-4 py-2 text-sm font-semibold rounded-xl text-slate-900 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    </button>
                 </div>
     
+                <div class="w-px h-8 bg-slate-300 dark:bg-slate-700"></div>
+
+                <!-- Control de Zoom -->
+                <div class="flex items-center gap-2 px-2 group">
+                    <svg class="w-4 h-4 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                    <input type="range" id="zoom-slider" min="50" max="150" value="100" class="custom-zoom-slider w-20 md:w-24 cursor-pointer opacity-80 group-hover:opacity-100 transition-opacity" title="Ajustar tamaño">
+                    <span id="zoom-percentage" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 w-8 text-right">100%</span>
+                </div>
+
+                <div class="w-px h-8 bg-slate-300 dark:bg-slate-700"></div>
+
+                <!-- Control de Vistas Previas -->
+                <div class="px-1">
+                    <button id="preview-toggle-btn" class="p-2 text-slate-500 hover:text-primary hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all duration-300 flex items-center justify-center" title="Alternar vistas previas">
+                        <svg id="preview-icon-on" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <svg id="preview-icon-off" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+                    </button>
+                </div>
+
+                <div class="w-px h-8 bg-slate-300 dark:bg-slate-700"></div>
+
                 <!-- Controles de Orden -->
-                <div class="flex items-center">
-                    <label for="sort-options" class="text-sm font-semibold text-gray-400 dark:text-gray-500 mr-3">ORDENAR</label>
-                    <select id="sort-options" class="bg-white/60 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 text-gray-800 dark:text-gray-200 text-sm rounded-2xl focus:bg-white dark:focus:bg-gray-800 focus:ring-4 focus:ring-[#007aff]/10 focus:border-[#007aff] px-5 py-2.5 shadow-[0_2px_10px_rgba(0,0,0,0.02)] appearance-none cursor-pointer hover:bg-white dark:hover:bg-gray-700 transition-all outline-none font-medium">
-                        <option value="default">Predeterminado</option>
-                        <option value="name_asc">Nombre (A-Z)</option>
-                        <option value="name_desc">Nombre (Z-A)</option>
-                        <option value="date_desc">Fecha (Más reciente)</option>
-                        <option value="date_asc">Fecha (Más antiguo)</option>
+                <div class="relative">
+                    <select id="sort-options" class="bg-transparent text-slate-800 dark:text-slate-200 text-sm font-semibold focus:ring-0 px-4 py-2 appearance-none cursor-pointer outline-none w-48">
+                        <option value="default" class="bg-white dark:bg-slate-900">Ordenar por...</option>
+                        <option value="name_asc" class="bg-white dark:bg-slate-900">Nombre (A-Z)</option>
+                        <option value="name_desc" class="bg-white dark:bg-slate-900">Nombre (Z-A)</option>
+                        <option value="date_desc" class="bg-white dark:bg-slate-900">Más recientes</option>
+                        <option value="date_asc" class="bg-white dark:bg-slate-900">Más antiguos</option>
                     </select>
+                    <svg class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
             </div>
         </div>
 
-        <section class="w-full bg-transparent">
+        <section class="w-full">
             
-            <div id="list-header" class="w-full grid-cols-12 gap-4 px-6 py-3 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hidden md:grid border-b border-gray-200/60 dark:border-gray-800/60 mb-3">
-                <div class="col-span-6 md:col-span-5">Archivo</div>
-                <div class="col-span-3 hidden md:block">Modificación</div>
-                <div class="col-span-3 md:col-span-2 text-right">Tamaño</div>
-                <div class="col-span-3 md:col-span-2 text-right">Acción</div>
+            <div id="list-header" class="w-full grid-cols-12 gap-4 px-8 py-4 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest hidden md:grid border-b border-slate-200 dark:border-slate-800/80 mb-4">
+                <div class="col-span-6 md:col-span-6">Nombre del Archivo</div>
+                <div class="col-span-3 hidden md:block">Última Modificación</div>
+                <div class="col-span-3 md:col-span-3 text-right">Tamaño</div>
             </div>
 
-            <div id="loading-state" class="flex justify-center items-center p-8">
-                <div class="loader mr-3"></div>
-                <span class="text-gray-500 font-medium">Conectando con Google Drive...</span>
+            <div id="loading-state" class="flex justify-center items-center py-20">
+                <div class="loader"></div>
             </div>
 
-            <div id="file-list" class="hidden w-full">
+            <div id="file-list" class="hidden w-full pb-20">
             </div>
 
             <div id="error-state" class="hidden p-8 text-center text-red-600 flex flex-col items-center">
                 <p id="error-message">Error al recuperar los archivos.</p>
-                <button onclick="main()" class="mt-4 px-6 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-full text-sm font-medium hover:bg-gray-800 dark:hover:bg-white transition-colors shadow-sm">Reintentar</button>
+                <button onclick="main()" class="mt-4 px-6 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-sm font-medium hover:bg-slate-800 dark:hover:bg-white transition-colors shadow-sm">Reintentar</button>
             </div>
 
         </div>
         </section>
+
+        <!-- PDF Viewer Modal -->
+        <div id="pdf-viewer-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center">
+            <div class="bg-white dark:bg-slate-900 w-full h-full shadow-2xl flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800">
+                    <h3 id="pdf-viewer-title" class="font-bold text-lg truncate pr-4">Vista Previa de PDF</h3>
+                    <button id="pdf-viewer-close" class="p-2 text-slate-500 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-colors" title="Cerrar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <div class="flex-1 relative">
+                    <div id="pdf-loading" class="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900 z-10 hidden">
+                        <div class="loader"></div>
+                    </div>
+                    <iframe id="pdf-iframe" class="w-full h-full border-0 hidden" src=""></iframe>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
@@ -156,8 +257,23 @@
         // Estado global de la aplicación
         let currentItems = [];
         let currentSort = 'default';
-        let currentView = 'list';
+        let currentView = 'grid';
         let currentFolderId = null;
+        let usePreviews = true; // Controla si se muestran las vistas previas de imágenes
+        let zoomLevels = { list: 100, grid: 100 };
+        const savedZoomLevels = localStorage.getItem('driveUxZoomLevels');
+        if (savedZoomLevels) {
+            try {
+                const parsedZoom = JSON.parse(savedZoomLevels);
+                // Validación básica para asegurar que el objeto cargado es válido
+                if (parsedZoom && typeof parsedZoom.list === 'number' && typeof parsedZoom.grid === 'number') {
+                    zoomLevels = parsedZoom;
+                }
+            } catch (e) {
+                console.error("Error al parsear los niveles de zoom guardados.", e);
+                localStorage.removeItem('driveUxZoomLevels'); // Limpiar datos corruptos
+            }
+        }
         let navigationStack = [{ id: ROOT_FOLDER_ID, name: 'Inicio' }];
         
         // --- INICIALIZAR TEMA OSCURO ---
@@ -178,13 +294,83 @@
                 ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>'
                 : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
         }
+
+        let currentPdfBlobUrl = null;
+
+        async function openPdfViewer(fileId, title) {
+            const modal = document.getElementById('pdf-viewer-modal');
+            const iframe = document.getElementById('pdf-iframe');
+            const titleEl = document.getElementById('pdf-viewer-title');
+            const loading = document.getElementById('pdf-loading');
+
+            titleEl.textContent = title;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            iframe.classList.add('hidden');
+            loading.classList.remove('hidden');
+            loading.innerHTML = '<div class="loader"></div>';
+
+            try {
+                const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${API_KEY}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Error al cargar el PDF');
+                
+                const blob = await response.blob();
+                const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+                
+                if (currentPdfBlobUrl) {
+                    URL.revokeObjectURL(currentPdfBlobUrl);
+                }
+                currentPdfBlobUrl = URL.createObjectURL(pdfBlob);
+                
+                iframe.onload = () => {
+                    loading.classList.add('hidden');
+                    iframe.classList.remove('hidden');
+                };
+                iframe.src = currentPdfBlobUrl;
+            } catch (error) {
+                console.error(error);
+                loading.innerHTML = '<p class="text-red-500 font-medium">Error al cargar el documento PDF.</p>';
+            }
+        }
+
+        function closePdfViewer() {
+            const modal = document.getElementById('pdf-viewer-modal');
+            const iframe = document.getElementById('pdf-iframe');
+            
+            iframe.src = '';
+            if (currentPdfBlobUrl) {
+                URL.revokeObjectURL(currentPdfBlobUrl);
+                currentPdfBlobUrl = null;
+            }
+            
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
         initTheme(); // Ejecutar al cargar la página
 
-        const fileIcon = `
-            <svg class="w-6 h-6 text-[#007aff] mr-4 flex-shrink-0 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-            </svg>
-        `;
+        const getIconForType = (mimeType, fileName, isFolder) => {
+            if (isFolder) return `<svg class="w-6 h-6 text-blue-500 drop-shadow-sm transition-colors duration-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+            
+            const extension = fileName ? fileName.split('.').pop().toLowerCase() : '';
+
+            switch (extension) {
+                case 'lsp':
+                    return `<svg class="w-6 h-6 text-indigo-500 drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>`;
+                case 'txt':
+                    return `<svg class="w-6 h-6 text-gray-500 drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`;
+                case 'dwg':
+                    return `<svg class="w-6 h-6 text-red-600 drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/><path d="M17 3.34a10 10 0 0 1 0 17.32"/><path d="M7 20.66a10 10 0 0 1 0-17.32"/></svg>`;
+                case 'zip':
+                case 'rar':
+                case '7z':
+                    return `<svg class="w-6 h-6 text-yellow-600 drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`;
+            }
+
+            if (mimeType.includes('image')) return `<svg class="w-6 h-6 text-sky-500 drop-shadow-sm transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`;
+            if (mimeType.includes('pdf')) return `<svg class="w-6 h-6 text-red-500 drop-shadow-sm transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`;
+            return `<svg class="w-6 h-6 text-slate-500 drop-shadow-sm transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`;
+        };
 
         async function fetchMetadataConfig() {
             try {
@@ -241,11 +427,11 @@
         }
 
         function formatSize(bytes) {
-            if (!bytes || bytes === 0) return '-';
+            if (!bytes || bytes === 0) return '--';
             const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const sizes = ['B', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
         function displayFiles() {
@@ -288,21 +474,25 @@
             // Reiniciar animación de transición
             listContainer.className = '';
             void listContainer.offsetWidth;
+        
+            listContainer.style.setProperty('--zoom-factor', zoomLevels[currentView] / 100);
 
             if (currentView === 'grid') {
                 listHeader.style.display = 'none';
-                listContainer.className = 'w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in';
+                listContainer.className = 'w-full flex flex-wrap gap-1';
             } else {
                 listHeader.style.display = '';
-                listContainer.className = 'w-full bg-white dark:bg-[#16181d] rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 dark:border-gray-800/60 overflow-hidden animate-fade-in';
+                listContainer.className = 'w-full flex flex-col gap-1';
             }
 
             if (sortedFiles.length === 0) {
                 listContainer.innerHTML = `
-                    <div class="col-span-full p-16 flex flex-col items-center justify-center text-center bg-white dark:bg-[#16181d] rounded-3xl border border-gray-100 dark:border-gray-800/60 shadow-sm w-full animate-fade-in">
-                        <svg class="w-20 h-20 text-gray-300 dark:text-gray-700 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No se encontraron archivos</h3>
-                        <p class="text-gray-500 dark:text-gray-400 max-w-md text-sm">La carpeta está vacía o tu búsqueda no arrojó resultados.</p>
+                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center">
+                        <div class="w-24 h-24 mb-6 rounded-full bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center">
+                            <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Directorio vacío</h3>
+                        <p class="text-slate-500 mt-2">No se encontraron elementos.</p>
                     </div>`;
                 listContainer.classList.remove('hidden');
                 return;
@@ -314,66 +504,65 @@
                 const title = metadata.title || file.name;
 
                 const dateObj = file.modifiedTime ? new Date(file.modifiedTime) : new Date();
-                const formattedDate = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const formattedDate = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
                 const formattedSize = formatSize(file.size);
-
-                // Lógica de previsualización estilo Google Drive
-                let imageElement = '';
+                const iconSVG = getIconForType(file.mimeType, file.name, isFolder);
+                
+                const isPdf = file.mimeType === 'application/pdf';
+                let actionClick;
                 if (isFolder) {
-                    imageElement = `
-                    <div class="w-full h-48 bg-[#f5f5f7] dark:bg-gray-800 flex items-center justify-center rounded-2xl cursor-pointer" onclick="navigateToFolder('${file.id}', '${file.name}')">
-                        <svg class="w-20 h-20 text-[#007aff]/40 dark:text-[#3b82f6]/40" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
-                    </div>`;
-                } else if (metadata.imageUrl) {
-                    imageElement = `<img src="${metadata.imageUrl}" alt="${title}" class="w-full h-48 object-cover bg-gray-100 rounded-2xl">`;
-                } else if (file.hasThumbnail && file.thumbnailLink) {
-                    const highResThumbnail = file.thumbnailLink.replace(/=s\d+/, '=s600'); // Aumentar calidad de la miniatura a 600px
-                    imageElement = `<img src="${highResThumbnail}" alt="Miniatura de ${title}" class="w-full h-48 object-cover bg-gray-100 rounded-2xl">`;
+                    actionClick = `navigateToFolder('${file.id}', '${file.name.replace(/'/g, "\\'")}')`;
+                } else if (isPdf) {
+                    actionClick = `openPdfViewer('${file.id}', '${title.replace(/'/g, "\\'")}')`;
                 } else {
-                    imageElement = `
-                    <div class="w-full h-48 bg-[#f5f5f7] dark:bg-gray-800 flex items-center justify-center rounded-2xl cursor-pointer" onclick="downloadFile('${file.id}', '${file.name}')">
-                        <svg class="w-16 h-16 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                    </div>`;
+                    actionClick = `window.open('${file.webViewLink}', '_blank')`;
                 }
+                const downloadAction = `event.stopPropagation(); downloadFile('${file.id}', '${file.name.replace(/'/g, "\\'")}')`;
 
                 if (currentView === 'grid') {
-                    const actionButtons = isFolder 
-                        ? `<button onclick="navigateToFolder('${file.id}', '${file.name}')" class="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">Abrir Carpeta</button>`
-                        : `<button onclick="downloadFile('${file.id}', '${file.name}')" class="flex-1 px-4 py-2.5 bg-sky-500 text-white text-sm font-semibold rounded-xl hover:bg-sky-600 transition-all shadow-[0_4px_12px_rgba(14,165,233,0.2)] hover:shadow-[0_6px_16px_rgba(14,165,233,0.3)]">Descargar</button>
-                           <a href="${file.webViewLink}" target="_blank" class="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Ver en Drive"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>`;
+                    const hasVisualPreview = usePreviews && !isFolder && (metadata.imageUrl || (file.hasThumbnail && file.thumbnailLink));
+                    const containerStyle = hasVisualPreview 
+                        ? `height: calc(200px * var(--zoom-factor, 1));` 
+                        : `width: calc(145px * var(--zoom-factor, 1)); height: calc(200px * var(--zoom-factor, 1));`;
+                        
+                    const downloadBtn = !isFolder ? `<button onclick="${downloadAction}" class="absolute top-2 right-2 z-20 p-1.5 bg-slate-900/60 hover:bg-slate-900/90 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-md shadow-sm" title="Descargar"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></button>` : '';
+
+                    let preview = '';
+                    if (isFolder) {
+                        preview = `<div class="absolute inset-0 bg-gradient-to-br from-sky-100 to-blue-50 dark:from-sky-900/40 dark:to-blue-900/20 opacity-50 transition-colors duration-500"></div>
+                                   <div class="relative z-10 scale-150 opacity-20 transition-opacity duration-500 group-hover:opacity-40">${iconSVG}</div>`;
+                    } else if (hasVisualPreview) {
+                        const imageUrl = metadata.imageUrl || file.thumbnailLink.replace(/=s\d+/, '=s600');
+                        preview = `<img src="${imageUrl}" loading="lazy" class="h-full w-auto max-w-none transition-transform duration-700" onload="this.closest('.file-item-wrapper').classList.add('is-loaded')">`;
+                    } else {
+                        preview = `<div class="absolute inset-0 bg-slate-100 dark:bg-slate-800/80 transition-colors duration-500"></div>
+                                   <div class="relative z-10 scale-150 opacity-50 transition-opacity duration-500 group-hover:opacity-80">${iconSVG}</div>`;
+                    }
 
                     return `
-                    <div class="flex flex-col bg-white dark:bg-[#16181d] p-2.5 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-none border border-gray-200/80 dark:border-gray-800 overflow-hidden transition-all duration-400 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] dark:hover:border-gray-700 hover:-translate-y-1.5 group">
-                        ${imageElement}
-                        <div class="p-4 px-3 flex flex-col flex-grow justify-between cursor-pointer" ${isFolder ? `onclick="navigateToFolder('${file.id}', '${file.name}')"` : ''}>
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-white tracking-tight truncate mb-2 group-hover:text-sky-500 transition-colors" title="${title}">${title}</h3>
-                            <div class="text-[11px] font-semibold text-gray-400 mt-1 flex justify-between uppercase tracking-wider">
-                                <span>${formattedDate}</span>
-                                <span>${isFolder ? 'Carpeta' : formattedSize}</span>
-                            </div>
+                    <div onclick="${actionClick}" class="group file-item-wrapper flex flex-col cursor-pointer shrink-0 ${!hasVisualPreview ? 'is-loaded' : ''}">
+                        <div class="relative overflow-hidden glass-panel bg-white/60 dark:bg-slate-900/60 border border-white/80 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center rounded-md" style="${containerStyle}">
+                            ${preview}
+                            ${downloadBtn}
                         </div>
-                        <div class="px-3 pb-2 pt-0 flex gap-3">
-                            ${actionButtons}
+                        <div class="mt-3 px-2 flex flex-col shrink-0 items-center text-center w-0 min-w-full">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate w-full transition-colors duration-500" title="${title}">${title}</h3>
+                            <span class="text-xs font-semibold text-slate-500 mt-1 transition-colors duration-500">${isFolder ? 'Carpeta' : formattedSize}</span>
                         </div>
                     </div>`;
                 } else {
-                    const icon = isFolder 
-                        ? `<svg class="w-6 h-6 text-[#007aff] dark:text-[#3b82f6] mr-4 flex-shrink-0 opacity-80" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`
-                        : fileIcon;
-                    const actionBtn = isFolder
-                        ? `<button onclick="navigateToFolder('${file.id}', '${file.name}')" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Abrir</button>`
-                        : `<button onclick="downloadFile('${file.id}', '${file.name}')" title="Descargar Archivo" class="px-5 py-2 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-600 transition-colors shadow-sm">Descargar</button>`;
-                        
                     return `
-                    <div class="grid grid-cols-12 gap-4 p-6 hover:bg-gray-50/80 dark:hover:bg-gray-800/40 items-center transition-colors border-b border-gray-100 dark:border-gray-800/60 last:border-0 group cursor-pointer" ${isFolder ? `onclick="navigateToFolder('${file.id}', '${file.name}')"` : ''}>
-                        <div class="col-span-12 sm:col-span-6 md:col-span-5 flex items-center overflow-hidden">
-                            ${icon}
-                            <span class="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-tight truncate group-hover:text-[#007aff] transition-colors" title="${title}">${title}</span>
+                    <div onclick="${actionClick}" class="group file-item-wrapper is-loaded grid grid-cols-12 gap-4 px-8 glass-panel bg-white/40 dark:bg-slate-900/40 hover:bg-white/80 dark:hover:bg-slate-800/80 items-center transition-all duration-300 rounded-lg border border-transparent hover:border-white/80 dark:hover:border-slate-700 hover:shadow-md cursor-pointer" style="padding-top: calc(1rem * var(--zoom-factor, 1)); padding-bottom: calc(1rem * var(--zoom-factor, 1));">
+                        <div class="col-span-12 md:col-span-6 flex items-center overflow-hidden gap-4">
+                            <div class="rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center shrink-0 transition-all duration-500" style="width: calc(2.5rem * var(--zoom-factor, 1)); height: calc(2.5rem * var(--zoom-factor, 1));">
+                                ${iconSVG}
+                            </div>
+                            <span class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-primary transition-colors duration-500" title="${title}">${title}</span>
                         </div>
-                        <div class="hidden md:block col-span-3 text-sm text-gray-500">${formattedDate}</div>
-                        <div class="hidden sm:block col-span-3 md:col-span-2 text-right text-sm text-gray-500 font-medium">${isFolder ? '-' : formattedSize}</div>
-                        <div class="col-span-12 sm:col-span-3 md:col-span-2 flex flex-row justify-end gap-3 mt-3 sm:mt-0">
-                            ${actionBtn}
+                        <div class="hidden md:block col-span-3 text-sm font-medium text-slate-500 transition-colors duration-500">${formattedDate}</div>
+                        <div class="hidden md:flex col-span-3 justify-end items-center text-sm font-bold text-slate-400 transition-colors duration-500 gap-3">
+                            <span class="bg-slate-200/50 dark:bg-slate-800/80 py-1 px-3 rounded-lg transition-colors duration-500">${isFolder ? '--' : formattedSize}</span>
+                            ${!isFolder ? `<button onclick="${downloadAction}" class="p-1.5 text-slate-400 hover:text-primary hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300" title="Descargar"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></button>` : `<div class="w-7"></div>`}
                         </div>
                     </div>`;
                 }
@@ -406,7 +595,7 @@
             // Resaltar en sidebar
             document.querySelectorAll('#sidebar-nav button').forEach(btn => {
                 const isActive = btn.dataset.id === folderId;
-                btn.className = `whitespace-nowrap md:whitespace-normal md:w-full text-left px-4 md:px-4 py-2 md:py-3 rounded-2xl text-sm transition-all flex items-center gap-3 flex-shrink-0 md:flex-shrink group ${isActive ? 'bg-white dark:bg-gray-800 text-[#007aff] dark:text-[#3b82f6] font-semibold shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-200/60 dark:border-gray-700/60' : 'text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-200/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'}`;
+                btn.className = `whitespace-nowrap md:whitespace-normal md:w-full text-left px-4 md:px-4 py-2 md:py-3 rounded-2xl text-sm transition-all flex items-center gap-3 flex-shrink-0 md:flex-shrink group ${isActive ? 'bg-white/60 dark:bg-slate-800/60 text-primary font-semibold shadow-sm border border-white/50 dark:border-slate-700/50' : 'text-slate-500 border border-transparent hover:bg-white/40 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-white'}`;
             });
 
             const loadingState = document.getElementById('loading-state');
@@ -426,18 +615,24 @@
 
         function renderSidebar(folders) {
             const nav = document.getElementById('sidebar-nav');
-            if (folders.length === 0) {
-                nav.innerHTML = '<div class="p-4 text-sm text-gray-500 dark:text-gray-400 w-full text-center md:text-left">No hay carpetas.</div>';
-                return;
-            }
             
-            nav.innerHTML = folders.map(folder => `
+            const homeButton = `
+                <button data-id="${ROOT_FOLDER_ID}" onclick="navigateToFolder('${ROOT_FOLDER_ID}', 'Inicio', true)"
+                    class="whitespace-nowrap md:whitespace-normal md:w-full text-left px-4 md:px-4 py-2 md:py-3 rounded-2xl text-sm transition-all flex items-center gap-3 flex-shrink-0 md:flex-shrink group text-slate-500 border border-transparent hover:bg-white/40 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-white">
+                    <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-8 8a1 1 0 001.414 1.414L4 11.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-5.586l.293.293a1 1 0 001.414-1.414l-8-8z"></path></svg>
+                    <span class="truncate font-medium flex-grow">Inicio</span>
+                </button>
+            `;
+
+            const folderButtons = folders.map(folder => `
                 <button data-id="${folder.id}" onclick="navigateToFolder('${folder.id}', '${folder.name.replace(/'/g, "\\'")}', true)"
-                    class="whitespace-nowrap md:whitespace-normal md:w-full text-left px-4 md:px-4 py-2 md:py-3 rounded-2xl text-sm transition-all flex items-center gap-3 flex-shrink-0 md:flex-shrink group text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-200/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white">
+                    class="whitespace-nowrap md:whitespace-normal md:w-full text-left px-4 md:px-4 py-2 md:py-3 rounded-2xl text-sm transition-all flex items-center gap-3 flex-shrink-0 md:flex-shrink group text-slate-500 border border-transparent hover:bg-white/40 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-white">
                     <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
                     <span class="truncate font-medium flex-grow">${folder.name}</span>
                 </button>
             `).join('');
+
+            nav.innerHTML = homeButton + folderButtons;
         }
 
         async function main() {
@@ -449,8 +644,15 @@
             errorState.classList.add('hidden');
             sidebarNav.innerHTML = '<div class="flex justify-center items-center p-4 w-full"><div class="loader"></div></div>';
 
-            document.querySelectorAll('#view-controls button').forEach(btn => btn.className = 'px-5 py-1.5 text-sm font-medium rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all');
-            document.querySelector(`#view-controls button[data-view="${currentView}"]`).className = 'px-5 py-1.5 text-sm font-semibold rounded-xl text-gray-900 dark:text-white bg-white dark:bg-gray-700 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all';
+            const activeClass = 'px-4 py-2 text-sm font-semibold rounded-xl text-slate-900 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all';
+            const inactiveClass = 'px-4 py-2 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
+            document.querySelectorAll('#view-controls button').forEach(btn => btn.className = inactiveClass);
+            document.querySelector(`#view-controls button[data-view="${currentView}"]`).className = activeClass;
+            
+            // Establecer el valor inicial del slider de zoom desde la configuración cargada
+            document.getElementById('zoom-slider').value = zoomLevels[currentView];
+            document.getElementById('zoom-percentage').textContent = `${zoomLevels[currentView]}%`;
+            document.getElementById('file-list').style.setProperty('--zoom-factor', zoomLevels[currentView] / 100);
             
             try {
                 const folders = await fetchDriveFolders();
@@ -460,13 +662,8 @@
                 // Cargar metadatos dinámicos
                 await fetchMetadataConfig();
 
-                loadingState.classList.add('hidden');
-
-                if (folders.length > 0) {
-                    navigateToFolder(folders[0].id, folders[0].name);
-                } else {
-                    displayFiles();
-                }
+                // Navegar a la carpeta raíz para mostrar las carpetas principales como items
+                navigateToFolder(ROOT_FOLDER_ID, 'Inicio', true);
             } catch (error) {
                 sidebarNav.innerHTML = '<div class="p-4 text-sm text-red-500 w-full text-center md:text-left">Error de conexión.</div>';
                 loadingState.classList.add('hidden');
@@ -491,17 +688,58 @@
                 
                 setTimeout(() => {
                     currentView = view;
-                    document.querySelectorAll('#view-controls button').forEach(btn => {
-                        btn.className = 'px-5 py-1.5 text-sm font-medium rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all';
-                    });
-                    button.className = 'px-5 py-1.5 text-sm font-semibold rounded-xl text-gray-900 dark:text-white bg-white dark:bg-gray-700 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all';
+                
+                    document.getElementById('zoom-slider').value = zoomLevels[currentView];
+                    document.getElementById('zoom-percentage').textContent = `${zoomLevels[currentView]}%`;
+                    
+                    const listBtn = document.querySelector('[data-view="list"]');
+                    const gridBtn = document.querySelector('[data-view="grid"]');
+                    
+                    const activeClass = 'px-4 py-2 text-sm font-semibold rounded-xl text-slate-900 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all';
+                    const inactiveClass = 'px-4 py-2 text-sm font-medium rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
+
+                    if (view === 'list') {
+                        listBtn.className = activeClass;
+                        gridBtn.className = inactiveClass;
+                    } else {
+                        gridBtn.className = activeClass;
+                        listBtn.className = inactiveClass;
+                    }
+
                     displayFiles();
                 }, 200); // Coincide con la duración de fade-out
             }
         });
 
+        document.getElementById('zoom-slider').addEventListener('input', (e) => {
+            zoomLevels[currentView] = parseInt(e.target.value, 10);
+            document.getElementById('zoom-percentage').textContent = `${e.target.value}%`;
+            document.getElementById('file-list').style.setProperty('--zoom-factor', zoomLevels[currentView] / 100);
+            localStorage.setItem('driveUxZoomLevels', JSON.stringify(zoomLevels));
+        });
+
+        document.getElementById('preview-toggle-btn').addEventListener('click', () => {
+            usePreviews = !usePreviews;
+            document.getElementById('preview-icon-on').classList.toggle('hidden', !usePreviews);
+            document.getElementById('preview-icon-off').classList.toggle('hidden', usePreviews);
+            displayFiles();
+        });
+
+        // Inicializar estado del interruptor de vista previa
+        document.getElementById('preview-icon-on').classList.toggle('hidden', !usePreviews);
+        document.getElementById('preview-icon-off').classList.toggle('hidden', usePreviews);
+
         document.getElementById('search-box').addEventListener('input', displayFiles);
-        document.addEventListener('DOMContentLoaded', main);
+        document.addEventListener('DOMContentLoaded', () => {
+            main();
+            document.getElementById('pdf-viewer-close').addEventListener('click', closePdfViewer);
+            // Cerrar modal con la tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape" && !document.getElementById('pdf-viewer-modal').classList.contains('hidden')) {
+                    closePdfViewer();
+                }
+            });
+        });
     </script>
 </body>
 </html>
